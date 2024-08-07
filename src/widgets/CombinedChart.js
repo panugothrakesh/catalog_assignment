@@ -45,6 +45,44 @@ const PriceInfoBox = ({ x, y, price }) => (
   </div>
 );
 
+const NewInfoBox = ({ x, y, info }) => (
+  <div
+    style={{
+      position: 'absolute',
+      top: y,
+      left: x,
+      backgroundColor: '#fff',
+      padding: '10px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      zIndex: 10,
+      transform: 'translateY(-50%)', // Center the box vertically along the line
+      whiteSpace: 'nowrap', // Prevent text from wrapping
+    }}
+  >
+    <p>{info}</p>
+  </div>
+);
+
+const UpdatedPriceInfoBox = ({ x, y, price }) => (
+  <div
+    style={{
+      position: 'absolute',
+      top: y,
+      left: x,
+      backgroundColor: '#fff',
+      padding: '10px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      zIndex: 10,
+      transform: 'translateY(-50%)', // Center the box vertically along the line
+      whiteSpace: 'nowrap', // Prevent text from wrapping
+    }}
+  >
+    <p>{price}</p>
+  </div>
+);
+
 const CombinedChart = () => {
   const [data, setData] = useState([]);
   const [timeRange, setTimeRange] = useState('1D');
@@ -52,14 +90,39 @@ const CombinedChart = () => {
   const [activeTooltip, setActiveTooltip] = useState(null);
   const [horizontalCursorY, setHorizontalCursorY] = useState(null);
   const [priceInfoBox, setPriceInfoBox] = useState(null);
-  const chartHeight = 300; // The height of your chart
+  const [newInfoBox, setNewInfoBox] = useState(null);
+  const [updatedPriceInfoBox, setUpdatedPriceInfoBox] = useState(null);
+  const chartHeight = 400; // Increased height for more vertical space
   const chartWidth = (window.innerWidth - 200); // Adjusted width of the chart to leave space on the right
-
 
   const handleDataFetched = useCallback((fetchedData) => {
     setData(fetchedData);
     setLoading(false);
-  }, []);
+
+    // Reverse data order to have newest data on the right
+    const reversedData = fetchedData.slice().reverse();
+    const latestDataPoint = fetchedData[0]; // Latest data point
+
+    if (latestDataPoint) {
+      const latestPrice = latestDataPoint.c;
+
+      // Calculate the y coordinate for the updated price info box
+      const priceData = reversedData.map((item) => ({
+        date: new Date(item.t).getTime(),
+        price: item.c,
+      }));
+
+      const priceValues = priceData.map(item => item.price);
+      const minPrice = Math.min(...priceValues) - (Math.max(...priceValues) - Math.min(...priceValues)) * 0.5; // Expanded padding at the bottom
+      const maxPrice = Math.max(...priceValues) + (Math.max(...priceValues) - Math.min(...priceValues)) * 0.5; // Expanded padding at the top
+
+      const chartY = chartHeight - ((latestPrice - minPrice) / (maxPrice - minPrice) * chartHeight);
+
+      // Position the UpdatedPriceInfoBox at the rightmost position
+      const updatedPriceX = chartWidth; // Align with the rightmost point
+      setUpdatedPriceInfoBox({ x: updatedPriceX, y: chartY, price: latestPrice });
+    }
+  }, [chartHeight, chartWidth]);
 
   useEffect(() => {
     setLoading(true);
@@ -97,8 +160,8 @@ const CombinedChart = () => {
 
   // Calculate y-axis domain for line chart
   const priceValues = priceData.map(item => item.price);
-  const minPrice = Math.min(...priceValues) * 0.9; // Adjust range to avoid starting from zero
-  const maxPrice = Math.max(...priceValues) * 1.1;
+  const minPrice = Math.min(...priceValues) - (Math.max(...priceValues) - Math.min(...priceValues)) * 0.5; // Expanded padding at the bottom
+  const maxPrice = Math.max(...priceValues) + (Math.max(...priceValues) - Math.min(...priceValues)) * 0.5; // Expanded padding at the top
 
   const findClosestPoint = (data, xValue) => {
     return data.reduce((prev, curr) => (
@@ -142,31 +205,32 @@ const CombinedChart = () => {
                   setHorizontalCursorY(chartY);
                   setActiveTooltip({ x: e.chartX, y: chartY, width: 200 });
                   setPriceInfoBox({ x: priceInfoBoxX, y: priceInfoBoxY, price: yValue });
+
+                  // Calculate the x coordinate for the NewInfoBox (aligned with the latest data point)
+                  const newInfoBoxX = chartWidth; // Position to the right of the chart
+                  const newInfoBoxY = chartY;
+
+                  setNewInfoBox({ x: newInfoBoxX, y: newInfoBoxY, info: yValue }); // Display the price at the mouse pointer
                 }
               }}
               onMouseLeave={() => {
                 setPriceInfoBox(null);
+                setNewInfoBox(null);
               }}
             >
               <XAxis dataKey="date" tickFormatter={tickFormatter} hide={true} />
               <YAxis domain={[minPrice, maxPrice]} hide={true} />
               <Tooltip
-                content={''} // Disable the default tooltip
+                content={null} // Disable the default tooltip
                 cursor={<DashedCursorLine x={activeTooltip?.x ?? 0} y={horizontalCursorY ?? 0} width={chartWidth} height={chartHeight} />}
               />
-              {/* <defs>
-                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#4B40EE" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#4B40EE" stopOpacity={0} />
-                </linearGradient>
-              </defs> */}
               <Line
                 dataKey="price"
                 stroke="#4B40EE"
                 strokeWidth={2}
                 fill="url(#gradient)"
                 dot={false} // Hide the dots
-                type="monotone"
+                type="linear"
               />
             </LineChart>
           </ResponsiveContainer>
@@ -181,6 +245,8 @@ const CombinedChart = () => {
             </ResponsiveContainer>
           </div>
           {priceInfoBox && <PriceInfoBox x={priceInfoBox.x} y={priceInfoBox.y} price={priceInfoBox.price} />}
+          {newInfoBox && <NewInfoBox x={newInfoBox.x} y={newInfoBox.y} info={newInfoBox.info} />}
+          {updatedPriceInfoBox && <UpdatedPriceInfoBox x={updatedPriceInfoBox.x} y={updatedPriceInfoBox.y} price={updatedPriceInfoBox.price} />}
         </div>
       )}
     </div>
