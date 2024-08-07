@@ -10,7 +10,7 @@ const constructUrl = (range, value) => {
     case '1D':
       fromDate.setDate(fromDate.getDate() - 1);
       range = 'minute';
-      value = 15;
+      value = 30;
       break;
     case '3D':
       fromDate.setDate(fromDate.getDate() - 3);
@@ -20,18 +20,28 @@ const constructUrl = (range, value) => {
     case '1W':
       fromDate.setDate(fromDate.getDate() - 7);
       range = 'hour';
-      value = 1;
+      value = 5;
       break;
     case '1M':
       fromDate.setMonth(fromDate.getMonth() - 1);
-      range = 'hour';
-      value = 6;
+      range = 'day';
+      value = 1;
       break;
     case '6M':
       fromDate.setMonth(fromDate.getMonth() - 6);
       range = 'day';
-      value = 1;
+      value = 7;
       break;
+    case '1Y':
+      fromDate.setFullYear(fromDate.getFullYear() - 1);
+      range = 'day';
+      value = 15;
+      break;
+      case 'MAX':
+        fromDate.setFullYear(fromDate.getFullYear() - 5);
+        range = 'month';
+        value = 2;
+        break;
     default:
       fromDate.setMonth(fromDate.getMonth() - 6);
   }
