@@ -38,12 +38,12 @@ const Assignment = ({ timeRange, data }) => {
         <p>Error: {error}</p>
       ) : (
         data && (
-            <div className="flex flex-col gap-4">
-              <h2 className="text-6xl flex items-start gap-2">
+            <div className="flex flex-col gap-5">
+              <h2 className="text-7xl flex items-start gap-2 text-[#1A243A]">
                 <span>{data[0]?.c.toLocaleString()}</span>
-                <span className="text-xl mt-[.35rem] text-[#BDBEBF]">USD</span>
+                <span className="text-2xl mt-2 text-[#BDBEBF]">USD</span>
               </h2>
-              <p className={`${color} tracking-[0.0125rem]`}>{change}</p>
+              <p className={`${color} text-lg tracking-[0.0125rem]`}>{change}</p>
             </div>
         )
       )}

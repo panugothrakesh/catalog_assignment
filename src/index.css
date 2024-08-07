@@ -6,3 +6,8 @@
     font-family: "circular";
     src: url("./fonts/CircularStd-Book.ttf");
   }
+
+  .recharts-wrapper .recharts-cartesian-grid-vertical line:first-child,
+  .recharts-wrapper .recharts-cartesian-grid-vertical line:last-child {
+        stroke-opacity: 0;
+  }
