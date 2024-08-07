@@ -40,7 +40,7 @@ const constructUrl = (range, value) => {
       case 'MAX':
         fromDate.setFullYear(fromDate.getFullYear() - 5);
         range = 'month';
-        value = 2;
+        value = 1;
         break;
     default:
       fromDate.setMonth(fromDate.getMonth() - 6);

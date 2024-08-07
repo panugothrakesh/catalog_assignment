@@ -262,7 +262,7 @@ const CombinedChart = () => {
             </div>
           </div>
           {loading ? (
-            <div className="py-6">Fetching wait...</div>
+            <div className="py-6">Max Fetch reached per minute(5)! Fetching wait...</div>
           ) : (
             <div
               className="relative border-r-[1px] border-l-[1px] border-b-[1px] border-[#E2E4E7]"
