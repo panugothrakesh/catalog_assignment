@@ -10,7 +10,7 @@ const constructUrl = (range, value) => {
     case '1D':
       fromDate.setDate(fromDate.getDate() - 1);
       range = 'minute';
-      value = 30;
+      value = 20;
       break;
     case '3D':
       fromDate.setDate(fromDate.getDate() - 3);

@@ -4,8 +4,8 @@ function Navbar({ activeIndex, onNavClick }) {
   const navItems = ['Summary', 'Chart', 'Statistics', 'Analysis', 'Settings'];
 
   return (
-    <div className='w-full border-b-[1px]'>
-      <ul className='flex gap-3 text-[#6F7177]'>
+    <div className='w-full border-b-[1px] text-[#6F7177]'>
+      <ul className='flex gap-3'>
         {navItems.map((item, index) => (
           <li
             key={index}

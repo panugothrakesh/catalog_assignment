@@ -13,6 +13,8 @@ import {
 import FetchData from "../Fetch/Fetch";
 import Assignment from "../components/assignment";
 import Navbar from "../components/nav";
+import Fullscreen from "react-fullscreen-crossbrowser";
+import FullScreen from "react-fullscreen-crossbrowser";
 
 // Custom components for chart elements
 const DashedCursorLine = ({ x, y, width, height }) => (
@@ -75,7 +77,7 @@ const CombinedChart = () => {
 
   const chartContainerRef = useRef(null);
   const [chartWidth, setChartWidth] = useState(window.innerWidth - 200);
-  const chartHeight = 360;
+  const chartHeight = 300;
 
   const handleDataFetched = useCallback(
     (fetchedData) => {
@@ -194,27 +196,53 @@ const CombinedChart = () => {
   };
 
   const getButtonClass = (range) => {
-    return `px-4 py-2 rounded-md ${timeRange === range ? 'bg-[#4B40EE] text-white' : ''}`;
+    return `px-4 py-2 rounded-md ${
+      timeRange === range ? "bg-[#4B40EE] text-white" : ""
+    }`;
+  };
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
   };
 
   return (
-    <div className="flex flex-col gap-5 text-[#6F7177]" ref={chartContainerRef}>
-      <FetchData timeRange={timeRange} onDataFetched={handleDataFetched} />
-      <Assignment timeRange={timeRange} data={data} />
-      <Navbar activeIndex={activeIndex} onNavClick={handleNavClick} />
-      {activeIndex === 0 && <div>Summary Content</div>}
-      {activeIndex === 1 && (
-        <div className="flex flex-col">
-          <div className="flex justify-between pt-8">
+    <Fullscreen enabled={isFullscreen} onChange={setIsFullscreen}>
+      {isFullscreen ? <div className=" w-screen h-screen absolute bg-white -z-40"></div> : <div className="hidden"></div>}
+      <div
+        className={`flex flex-col gap-5 text-[#6F7177]${
+          isFullscreen ? "fullscreen-mode h-screen py-12 px-10 mr-44" : ""
+        }`}
+        ref={chartContainerRef}
+      >
+        <FetchData timeRange={timeRange} onDataFetched={handleDataFetched} />
+        <Assignment timeRange={timeRange} data={data} />
+        <Navbar activeIndex={activeIndex} onNavClick={handleNavClick} />
+        {activeIndex === 0 && <div>Summary Content</div>}
+        {activeIndex === 1 && (
+          <div className="flex flex-col gap-6">
+          <div className="flex justify-between pt-8 text-[#6F7177]">
             <div className="flex justify-start items-center">
-              <button className="px-4 py-2 mx-1 rounded flex gap-2 justify-center items-center">
-                <img src="expand.svg" alt="" />
-                Fullscreen
-              </button>
+            {isFullscreen ?
+            <button
+                  className="px-4 py-2 mx-1 rounded flex gap-2 justify-center bg-[#F3F3F3] items-center"
+                  onClick={toggleFullscreen}
+                >
+                   <img src="minimize.svg" alt="" />
+                   <p>Exit Fullscreen</p>
+                </button>
+                : <button
+                className="px-4 py-2 mx-1 rounded flex gap-2 justify-center items-center"
+                onClick={toggleFullscreen}
+              >
+                 <img src="expand.svg" alt="" />
+                 <p>Fullscreen</p>
+              </button>}
               <button className="px-4 py-2 mx-1 rounded flex gap-2 justify-center items-center">
                 <img src="comapre.svg" alt="" />
                 Compare
-              </button>
+              </button> 
             </div>
             <div className="flex justify-center items-center gap-1">
               <button
@@ -268,7 +296,7 @@ const CombinedChart = () => {
               className="relative border-r-[1px] border-l-[1px] border-b-[1px] border-[#E2E4E7]"
               style={{ width: chartWidth, height: chartHeight }}
             >
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" style={{index: 10}}>
                 <AreaChart
                   data={priceData}
                   onMouseMove={(e) => {
@@ -339,8 +367,7 @@ const CombinedChart = () => {
                 </AreaChart>
               </ResponsiveContainer>
               <div
-                className="absolute bottom-0 left-0 right-0"
-                style={{ height: 40, zIndex: -1 }}
+                className="absolute bottom-0 left-0 right-0 h-16 -z-10"
               >
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={volumeData}>
@@ -372,10 +399,11 @@ const CombinedChart = () => {
           )}
         </div>
       )}
-      {activeIndex === 2 && <div>Statistics Content</div>}
-      {activeIndex === 3 && <div>Analysis Content</div>}
-      {activeIndex === 4 && <div>Settings Content</div>}
-    </div>
+        {activeIndex === 2 && <div>Statistics Content</div>}
+        {activeIndex === 3 && <div>Analysis Content</div>}
+        {activeIndex === 4 && <div>Settings Content</div>}
+      </div>
+    </Fullscreen>
   );
 };
 
