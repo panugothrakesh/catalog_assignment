@@ -23,6 +23,12 @@ function Footer() {
           https://recharts.org
         </a>
       </p>
+      <p className="text-lg text-[#6F7177] leading-8 md:w-3/4 w-full flex items-center gap-1">
+        <img src="link.svg" alt="" className="h-5 rounded-md" /> Poligon.io :{" "}
+        <a target="blank" href="https://polygon.io/docs/stocks" className="ml-3 hover:underline hover: underline-offset-2 hover:text-[#4B40EE] duration-300 transition-all">
+            https://polygon.io/docs/stocks
+        </a>
+      </p>
       <p className="text-lg text-[#6F7177] leading-8 md:w-3/4 w-full">
         ChatGPT :
         <span className="ml-3">
