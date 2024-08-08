@@ -14,7 +14,7 @@ import FetchData from "../Fetch/Fetch";
 import Assignment from "../components/assignment";
 import Navbar from "../components/nav";
 import Fullscreen from "react-fullscreen-crossbrowser";
-import FullScreen from "react-fullscreen-crossbrowser";
+import BarChartComp from "../components/BarChart"
 
 // Custom components for chart elements
 const DashedCursorLine = ({ x, y, width, height }) => (
@@ -366,21 +366,7 @@ const CombinedChart = () => {
                   />
                 </AreaChart>
               </ResponsiveContainer>
-              <div
-                className="absolute bottom-0 left-0 right-0 h-16 -z-10"
-              >
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={volumeData}>
-                    <XAxis
-                      dataKey="date"
-                      tickFormatter={tickFormatter}
-                      hide={true}
-                    />
-                    <YAxis hide={true} />
-                    <Bar dataKey="volume" fill="#E6E8EB" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              <BarChartComp tickFormatter={tickFormatter} volumeData={volumeData}/>
               {newInfoBox && (
                 <NewInfoBox
                   x={newInfoBox.x}

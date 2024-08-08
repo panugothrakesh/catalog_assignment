@@ -4,7 +4,7 @@
 
 @font-face {
     font-family: "circular";
-    src: url("./fonts/CircularStd-Book.ttf");
+    src: url("./fonts/CircularStd-Book.woff2");
   }
 
   .recharts-wrapper .recharts-cartesian-grid-vertical line:first-child,
